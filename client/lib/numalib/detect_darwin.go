@@ -44,12 +44,29 @@ func (m *MacOS) ScanSystem(top *Topology) {
 
 func (m *MacOS) scanAppleSilicon(top *Topology) {
 	pCoreCount := m1cpu.PCoreCount()
-	pCoreSpeed := hw.KHz(m1cpu.PCoreHz() / 1000)
+	pCoreSpeedReported := m1cpu.PCoreHz()
+	if pCoreSpeedReported <= 0 {
+		pCoreSpeedReported = 3500 * 1000 * 1000 // 3.5 GHz
+	}
+	pCoreSpeed := hw.KHz(pCoreSpeedReported / 1000)
+	println("pCoreCount:", pCoreCount)
+	if pCoreCount < 0 {
+		pCoreCount = 0
+	}
 
 	eCoreCount := m1cpu.ECoreCount()
-	eCoreSpeed := hw.KHz(m1cpu.ECoreHz() / 1000)
+	println("eCoreCount:", eCoreCount)
+	// I assume that eCoreCount being -1 is an error code
+	if eCoreCount < 0 {
+		eCoreCount = 0
+	}
+	eCoreSpeedReported := m1cpu.ECoreHz()
+	if eCoreSpeedReported <= 0 {
+		eCoreSpeedReported = 2000 * 1000 * 1000 // 2.0 GHz
+	}
+	eCoreSpeed := hw.KHz(eCoreSpeedReported / 1000)
 
-	top.Cores = make([]Core, pCoreCount+eCoreCount+1) // I keep running into an out of bounds error, this should not be possible
+	top.Cores = make([]Core, pCoreCount+eCoreCount) // I keep running into an out of bounds error, this should not be possible
 	nthCore := hw.CoreID(0)
 
 	for range pCoreCount {
