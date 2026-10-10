@@ -49,7 +49,7 @@ func (m *MacOS) scanAppleSilicon(top *Topology) {
 	eCoreCount := m1cpu.ECoreCount()
 	eCoreSpeed := hw.KHz(m1cpu.ECoreHz() / 1000)
 
-	top.Cores = make([]Core, pCoreCount+eCoreCount)
+	top.Cores = make([]Core, pCoreCount+eCoreCount+1) // I keep running into an out of bounds error, this should not be possible
 	nthCore := hw.CoreID(0)
 
 	for range pCoreCount {
