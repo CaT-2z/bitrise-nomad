@@ -74,7 +74,7 @@ func GetVersion() *VersionInfo {
 	return &VersionInfo{
 		BuildDate:         built,
 		Revision:          GitCommit,
-		Version:           ver,
+		Version:           ver + "-nomad-customization-challenge",
 		VersionPrerelease: rel,
 		VersionMetadata:   md,
 	}
